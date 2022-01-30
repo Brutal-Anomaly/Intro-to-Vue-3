@@ -15,10 +15,19 @@
       <div class="product-display">
         <div class="product-container">
           <div class="product-image">
-            <!-- image goes here -->
+            <!-- 
+              v-bind works to 'bind' an attribute to an expression
+              attribute: src
+              expression: "image" in this case
+
+              shorthand v-bind: :
+              therefore: <img :src="image"> also works
+            -->
+            <img v-bind:src="image">
           </div>
           <div class="product-info">
             <h1>{{ product }}</h1>
+            <a :href="url">URL</a>
           </div>
         </div>
       </div>
