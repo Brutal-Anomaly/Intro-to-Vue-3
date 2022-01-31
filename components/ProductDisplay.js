@@ -1,13 +1,14 @@
 app.component('product-display', {
-  props: {
-    premium: {
-      type: Boolean,
-      required: true
-    }
-  },
-  template: 
-  /*html*/
-  `<div class="product-display">
+    // props allow for attributes from the parent (this file) to trickle down into the individual children (instances)
+    props: {
+        premium: {
+            type: Boolean,
+            required: true
+        }
+    },
+    template:   
+    /*html*/`
+    <div class="product-display">
     <div class="product-container">
       <div class="product-image">
         <img v-bind:src="image">
@@ -19,7 +20,6 @@ app.component('product-display', {
         <p v-else>Out of Stock</p>
 
         <p>Shipping: {{ shipping }}</p>
-
         <ul>
           <li v-for="detail in details">{{ detail }}</li>
         </ul>
@@ -32,51 +32,56 @@ app.component('product-display', {
           :style="{ backgroundColor: variant.color }">
         </div>
         
-        <button 
-          class="button" 
-          :class="{ disabledButton: !inStock }" 
-          :disabled="!inStock" 
-          v-on:click="addToCart">
-          Add to Cart
-        </button>
-      </div>
+        <button class="button" :class="{ disabledButton: !inStock }" :disabled="!inStock" v-on:click="addToCart">Add to Cart</button>
+        <button class="button" @click="removeFromCart">Remove from Cart</button>
+
     </div>
-  </div>`,
-  data() {
+  </div>
+</div>`,
+
+data() {
     return {
+        //cart: 0,
         product: 'Socks',
         brand: 'Vue Mastery',
         selectedVariant: 0,
         details: ['50% cotton', '30% wool', '20% polyester'],
         variants: [
-          { id: 2234, color: 'green', image: './assets/images/socks_green.jpg', quantity: 50 },
-          { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 },
+        { id: 2234, color: 'green', image: './assets/images/socks_green.jpg', quantity: 50 },
+        { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 },
         ]
     }
-  },
-  methods: {
-      addToCart() {
-          this.cart += 1
-      },
-      updateVariant(index) {
-          this.selectedVariant = index
-      }
-  },
-  computed: {
-      title() {
-          return this.brand + ' ' + this.product
-      },
-      image() {
-          return this.variants[this.selectedVariant].image
-      },
-      inStock() {
-          return this.variants[this.selectedVariant].quantity
-      },
-      shipping() {
+},
+methods: {
+    addToCart() {
+        //this.cart += 1
+        // 'emits' the add-to-cart which the component listens for in index.html
+        // then index.html will call updateCart in main.js whenever it hears 'add-to-cart'
+        this.$emit('add-to-cart', this.variants[this.selectedVariant].id, true)
+    },
+    removeFromCart() {
+        this.$emit('remove-from-cart', this.variants[this.selectedVariant].id, false)
+    },
+    updateVariant(index) {
+        this.selectedVariant = index
+    }
+},
+computed: {
+    title() {
+        return this.brand + ' ' + this.product
+    },
+    image() {
+        return this.variants[this.selectedVariant].image
+    },
+    inStock() {
+        return this.variants[this.selectedVariant].image
+    },
+    shipping() {
         if (this.premium) {
-          return 'Free'
+            return 'Free'
         }
         return 2.99
-      }
-  }
+    },
+    
+}
 })
